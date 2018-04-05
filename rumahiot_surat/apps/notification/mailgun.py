@@ -1,7 +1,7 @@
 import requests
 
 
-class MailGun():
+class MailGun:
 
     # Send simple text message using MailGun API
     # Sender doesn't only consist of email address without the domain -> without @domain

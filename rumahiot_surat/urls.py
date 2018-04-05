@@ -19,6 +19,6 @@ from django.conf.urls import url, include
 
 
 urlpatterns = [
-    url(r'^email/', include('rumahiot_surat.apps.email_notification.urls')),
-    url(r'^mobile/', include('rumahiot_surat.apps.mobile_notification.urls')),
+    url(r'^email/', include('rumahiot_surat.apps.notification.urls')),
+    url(r'^logger/', include('rumahiot_surat.apps.logger.urls')),
 ]

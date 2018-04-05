@@ -1,6 +1,6 @@
 import hashlib
 
-class ResponseGenerator():
+class ResponseGenerator:
     # generate error response in dict format
     def error_response_generator(self,code, message):
         response = {

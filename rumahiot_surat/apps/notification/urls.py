@@ -13,9 +13,13 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
+# from django.contrib import admin
 from django.urls import path
+from django.conf.urls import url, include
+from rumahiot_surat.apps.notification.views import email_activation,welcome_email, device_notification_email
 
 urlpatterns = [
-
+    url(r'^activation/send$', email_activation, name='email_activation'),
+    url(r'^welcome/send$', welcome_email, name='welcome_email'),
+    url(r'^device/notification/send$', device_notification_email, name='device_notification_email')
 ]

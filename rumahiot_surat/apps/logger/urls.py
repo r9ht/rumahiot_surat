@@ -16,9 +16,10 @@ Including another URLconf
 # from django.contrib import admin
 from django.urls import path
 from django.conf.urls import url, include
-from rumahiot_surat.apps.email_notification.views import email_activation,welcome_email
+from rumahiot_surat.apps.logger.views import device_panel_notification
 
 urlpatterns = [
-    url(r'^activation/send$', email_activation, name='email_activation'),
-    url(r'^welcome/send$', welcome_email, name='welcome_email')
+    url(r'^device/sensor/notification$', device_panel_notification, name='device_panel_notification'),
+    url(r'^device/sensor/notification/clear', device_panel_notification, name='device_panel_notification_clear'),
+    url(r'^device/sensor/notification/clear/all$', device_panel_notification, name='device_panel_notification_clear_all')
 ]
