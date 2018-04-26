@@ -19,16 +19,16 @@ def email_activation(request):
     requtils = RequestUtils()
     mg = MailGun()
 
-    if request.method == "POST" :
+    if request.method == 'POST' :
         try:
             token = requtils.get_access_token(request)
         except KeyError:
-            response_data = rg.error_response_generator(400, "Please define the authorization header")
-            return HttpResponse(json.dumps(response_data), content_type="application/json", status=400)
+            response_data = rg.error_response_generator(400, 'Please define the authorization header')
+            return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
         else:
             if token['token'] is None:
                 response_data = rg.error_response_generator(400, token['error'])
-                return HttpResponse(json.dumps(response_data), content_type="application/json", status=400)
+                return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
             else:
                 form = EmailActivationForm(request.POST)
                 if form.is_valid():
@@ -55,23 +55,23 @@ def email_activation(request):
                                 'email': form.cleaned_data['email']
                             }
                             response_data = rg.data_response_generator(data)
-                            return HttpResponse(json.dumps(response_data), content_type="application/json", status=200)
+                            return HttpResponse(json.dumps(response_data), content_type='application/json', status=200)
 
                         else:
-                            response_data = rg.error_response_generator(500, "Internal server error")
-                            return HttpResponse(json.dumps(response_data), content_type="application/json", status=500)
+                            response_data = rg.error_response_generator(500, 'Internal server error')
+                            return HttpResponse(json.dumps(response_data), content_type='application/json', status=500)
 
 
                     else:
-                        response_data = rg.error_response_generator(400, "Invalid authorization key")
-                        return HttpResponse(json.dumps(response_data), content_type="application/json", status=400)
+                        response_data = rg.error_response_generator(400, 'Invalid authorization key')
+                        return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
                 else:
-                    response_data = rg.error_response_generator(400, "Invalid or missing parameter submitted")
-                    return HttpResponse(json.dumps(response_data), content_type="application/json", status=400)
+                    response_data = rg.error_response_generator(400, 'Invalid or missing parameter submitted')
+                    return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
 
     else:
-        response_data = rg.error_response_generator(400, "Bad request method")
-        return HttpResponse(json.dumps(response_data), content_type="application/json", status=400)
+        response_data = rg.error_response_generator(400, 'Bad request method')
+        return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
 
 
 
@@ -83,16 +83,16 @@ def welcome_email(request):
     requtils = RequestUtils()
     mg = MailGun()
 
-    if request.method == "POST" :
+    if request.method == 'POST' :
         try:
             token = requtils.get_access_token(request)
         except KeyError:
-            response_data = rg.error_response_generator(400, "Please define the authorization header")
-            return HttpResponse(json.dumps(response_data), content_type="application/json", status=400)
+            response_data = rg.error_response_generator(400, 'Please define the authorization header')
+            return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
         else:
             if token['token'] is None:
                 response_data = rg.error_response_generator(400, token['error'])
-                return HttpResponse(json.dumps(response_data), content_type="application/json", status=403)
+                return HttpResponse(json.dumps(response_data), content_type='application/json', status=403)
             else:
                 form = EmailWelcomeForm(request.POST)
                 if form.is_valid():
@@ -114,23 +114,23 @@ def welcome_email(request):
                                 'email': form.cleaned_data['email']
                             }
                             response_data = rg.data_response_generator(data)
-                            return HttpResponse(json.dumps(response_data), content_type="application/json", status=200)
+                            return HttpResponse(json.dumps(response_data), content_type='application/json', status=200)
 
                         else:
-                            response_data = rg.error_response_generator(500, "Internal server error")
-                            return HttpResponse(json.dumps(response_data), content_type="application/json", status=500)
+                            response_data = rg.error_response_generator(500, 'Internal server error')
+                            return HttpResponse(json.dumps(response_data), content_type='application/json', status=500)
 
 
                     else:
-                        response_data = rg.error_response_generator(400, "Invalid authorization key")
-                        return HttpResponse(json.dumps(response_data), content_type="application/json", status=400)
+                        response_data = rg.error_response_generator(400, 'Invalid authorization key')
+                        return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
                 else:
-                    response_data = rg.error_response_generator(400, "Invalid or missing parameter submitted")
-                    return HttpResponse(json.dumps(response_data), content_type="application/json", status=400)
+                    response_data = rg.error_response_generator(400, 'Invalid or missing parameter submitted')
+                    return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
 
     else:
-        response_data = rg.error_response_generator(400, "Bad request method")
-        return HttpResponse(json.dumps(response_data), content_type="application/json", status=400)
+        response_data = rg.error_response_generator(400, 'Bad request method')
+        return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
 
 # NOTE : THERE WILL BE NOTIFICATION THAT SENT TO OTHER ENDPOINT FOR MOBILE CLIENT
 # THE MOBILE NOTIFICATION WILL BE REMOVED AFTER ALPHA RELEASE
@@ -141,29 +141,29 @@ def device_notification_email(request):
     requtils = RequestUtils()
     mg = MailGun()
 
-    if request.method == "POST":
+    if request.method == 'POST':
         try:
             token = requtils.get_access_token(request)
         except KeyError:
-            response_data = rg.error_response_generator(400, "Please define the authorization header")
-            return HttpResponse(json.dumps(response_data), content_type="application/json", status=400)
+            response_data = rg.error_response_generator(400, 'Please define the authorization header')
+            return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
         else:
             if token['token'] is None:
                 response_data = rg.error_response_generator(400, token['error'])
-                return HttpResponse(json.dumps(response_data), content_type="application/json", status=403)
+                return HttpResponse(json.dumps(response_data), content_type='application/json', status=403)
             else:
                 form = DeviceNotificationEmail(request.POST)
                 if form.is_valid():
                     # TODO : Fix this secret key, create an automated for key changing
                     if token['token'] == SECRET_KEY:
                         # Normalize the direction
-                        threshold_direction = ""
+                        threshold_direction = ''
                         if form.cleaned_data['threshold_direction'] == '1':
                             threshold_direction = 'Above'
                         elif form.cleaned_data['threshold_direction'] == '-1':
                             threshold_direction = 'Below'
 
-                        if form.cleaned_data['notification_type'] == "0" :
+                        if form.cleaned_data['notification_type'] == '0' :
                             email_body = 'Hi there , we are notifying that current value of sensor {} on device {} is {}{} at {}, {} ' \
                                          'the set threshold value which is {}{}, There will be no more notification unless the latest ' \
                                          'value is going back to normal and we will let you know when it happens' \
@@ -178,7 +178,7 @@ def device_notification_email(request):
                                                                               form.cleaned_data['threshold_value'],
                                                                               form.cleaned_data['unit_symbol'])
 
-                        elif form.cleaned_data['notification_type'] == "1" :
+                        elif form.cleaned_data['notification_type'] == '1' :
                             email_body = 'Hi, this is a proceeding information from the last notification, we are notifying ' \
                                          'you that the current value of sensor {} on device {} is going back to normal , {}{} at {}' \
                                          '\n\nRegards\nRumah IoT Team'.format(form.cleaned_data['user_sensor_name'],
@@ -206,16 +206,16 @@ def device_notification_email(request):
                                 'email': form.cleaned_data['email']
                             }
                             response_data = rg.data_response_generator(data)
-                            return HttpResponse(json.dumps(response_data), content_type="application/json", status=200)
+                            return HttpResponse(json.dumps(response_data), content_type='application/json', status=200)
 
                         else:
-                            response_data = rg.error_response_generator(500, "Internal server error")
-                            return HttpResponse(json.dumps(response_data), content_type="application/json", status=500)
+                            response_data = rg.error_response_generator(500, 'Internal server error')
+                            return HttpResponse(json.dumps(response_data), content_type='application/json', status=500)
 
                 else:
-                    response_data = rg.error_response_generator(400, "Invalid or missing parameter submitted")
-                    return HttpResponse(json.dumps(response_data), content_type="application/json", status=400)
+                    response_data = rg.error_response_generator(400, 'Invalid or missing parameter submitted')
+                    return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
 
     else:
-        response_data = rg.error_response_generator(400, "Bad request method")
-        return HttpResponse(json.dumps(response_data), content_type="application/json", status=400)
+        response_data = rg.error_response_generator(400, 'Bad request method')
+        return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)

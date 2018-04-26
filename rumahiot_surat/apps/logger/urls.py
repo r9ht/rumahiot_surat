@@ -16,10 +16,11 @@ Including another URLconf
 # from django.contrib import admin
 from django.urls import path
 from django.conf.urls import url, include
-from rumahiot_surat.apps.logger.views import device_panel_notification
+from rumahiot_surat.apps.logger.views import device_panel_notification, clear_device_panel_notification, clear_all_device_panel_notification, get_all_device_panel_notification
 
 urlpatterns = [
     url(r'^device/sensor/notification$', device_panel_notification, name='device_panel_notification'),
-    url(r'^device/sensor/notification/clear', device_panel_notification, name='device_panel_notification_clear'),
-    url(r'^device/sensor/notification/clear/all$', device_panel_notification, name='device_panel_notification_clear_all')
+    url(r'^device/sensor/notification/get/all$', get_all_device_panel_notification, name='get_all_device_panel_notification'),
+    url(r'^device/sensor/notification/clear/(?P<device_sensor_notification_log_uuid>.+)$', clear_device_panel_notification, name='clear_device_panel_notification'),
+    url(r'^device/sensor/notification/clearall$', clear_all_device_panel_notification, name='clear_all_device_panel_notification')
 ]
