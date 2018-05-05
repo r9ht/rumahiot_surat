@@ -24,12 +24,12 @@ def device_panel_notification(request):
         try:
             token = requtils.get_access_token(request)
         except KeyError:
-            response_data = rg.error_response_generator(400, 'Please define the authorization header')
-            return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
+            response_data = rg.error_response_generator(403, 'Please define the authorization header')
+            return HttpResponse(json.dumps(response_data), content_type='application/json', status=403)
         else:
             if token['token'] is None:
-                response_data = rg.error_response_generator(400, token['error'])
-                return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
+                response_data = rg.error_response_generator(403, token['error'])
+                return HttpResponse(json.dumps(response_data), content_type='application/json', status=403)
             else:
                 form = DeviceSensorNotificationForm(request.POST)
                 if form.is_valid():
@@ -80,7 +80,6 @@ def device_panel_notification(request):
         response_data = rg.error_response_generator(400, 'Bad request method')
         return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
 
-
 # For changing viewed status on a specific device notification
 def clear_device_panel_notification(request, device_sensor_notification_log_uuid):
     # Class import
@@ -93,8 +92,8 @@ def clear_device_panel_notification(request, device_sensor_notification_log_uuid
         try:
             token = requtils.get_access_token(request)
         except KeyError:
-            response_data = rg.error_response_generator(400, 'Please define the authorization header')
-            return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
+            response_data = rg.error_response_generator(403, 'Please define the authorization header')
+            return HttpResponse(json.dumps(response_data), content_type='application/json', status=403)
         else:
             if token['token'] != None:
                 user = auth.get_user_data(token['token'])
@@ -124,8 +123,11 @@ def clear_device_panel_notification(request, device_sensor_notification_log_uuid
                         return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
 
                 else:
-                    response_data = rg.error_response_generator(400, user['error'])
-                    return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
+                    response_data = rg.error_response_generator(403, user['error'])
+                    return HttpResponse(json.dumps(response_data), content_type='application/json', status=403)
+            else:
+                response_data = rg.error_response_generator(403, token['error'])
+                return HttpResponse(json.dumps(response_data), content_type='application/json', status=403)
 
     else:
         response_data = rg.error_response_generator(400, 'Bad request method')
@@ -143,8 +145,8 @@ def clear_all_device_panel_notification(request):
         try:
             token = requtils.get_access_token(request)
         except KeyError:
-            response_data = rg.error_response_generator(400, 'Please define the authorization header')
-            return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
+            response_data = rg.error_response_generator(403, 'Please define the authorization header')
+            return HttpResponse(json.dumps(response_data), content_type='application/json', status=403)
         else:
             if token['token'] != None:
                 user = auth.get_user_data(token['token'])
@@ -163,9 +165,11 @@ def clear_all_device_panel_notification(request):
                         return HttpResponse(json.dumps(response_data), content_type='application/json', status=200)
 
                 else:
-                    response_data = rg.error_response_generator(400, user['error'])
-                    return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
-
+                    response_data = rg.error_response_generator(403, user['error'])
+                    return HttpResponse(json.dumps(response_data), content_type='application/json', status=403)
+            else:
+                response_data = rg.error_response_generator(403, token['error'])
+                return HttpResponse(json.dumps(response_data), content_type="application/json", status=403)
     else:
         response_data = rg.error_response_generator(400, 'Bad request method')
         return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)

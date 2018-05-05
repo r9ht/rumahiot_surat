@@ -23,12 +23,12 @@ def email_activation(request):
         try:
             token = requtils.get_access_token(request)
         except KeyError:
-            response_data = rg.error_response_generator(400, 'Please define the authorization header')
-            return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
+            response_data = rg.error_response_generator(403, 'Please define the authorization header')
+            return HttpResponse(json.dumps(response_data), content_type='application/json', status=403)
         else:
             if token['token'] is None:
-                response_data = rg.error_response_generator(400, token['error'])
-                return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
+                response_data = rg.error_response_generator(403, token['error'])
+                return HttpResponse(json.dumps(response_data), content_type='application/json', status=403)
             else:
                 form = EmailActivationForm(request.POST)
                 if form.is_valid():
@@ -73,8 +73,6 @@ def email_activation(request):
         response_data = rg.error_response_generator(400, 'Bad request method')
         return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
 
-
-
 @csrf_exempt
 def welcome_email(request):
 
@@ -87,11 +85,11 @@ def welcome_email(request):
         try:
             token = requtils.get_access_token(request)
         except KeyError:
-            response_data = rg.error_response_generator(400, 'Please define the authorization header')
-            return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
+            response_data = rg.error_response_generator(403, 'Please define the authorization header')
+            return HttpResponse(json.dumps(response_data), content_type='application/json', status=403)
         else:
             if token['token'] is None:
-                response_data = rg.error_response_generator(400, token['error'])
+                response_data = rg.error_response_generator(403, token['error'])
                 return HttpResponse(json.dumps(response_data), content_type='application/json', status=403)
             else:
                 form = EmailWelcomeForm(request.POST)
@@ -145,11 +143,11 @@ def device_notification_email(request):
         try:
             token = requtils.get_access_token(request)
         except KeyError:
-            response_data = rg.error_response_generator(400, 'Please define the authorization header')
-            return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
+            response_data = rg.error_response_generator(403, 'Please define the authorization header')
+            return HttpResponse(json.dumps(response_data), content_type='application/json', status=403)
         else:
             if token['token'] is None:
-                response_data = rg.error_response_generator(400, token['error'])
+                response_data = rg.error_response_generator(403, token['error'])
                 return HttpResponse(json.dumps(response_data), content_type='application/json', status=403)
             else:
                 form = DeviceNotificationEmail(request.POST)
@@ -211,7 +209,9 @@ def device_notification_email(request):
                         else:
                             response_data = rg.error_response_generator(500, 'Internal server error')
                             return HttpResponse(json.dumps(response_data), content_type='application/json', status=500)
-
+                    else:
+                        response_data = rg.error_response_generator(403, token['error'])
+                        return HttpResponse(json.dumps(response_data), content_type="application/json", status=403)
                 else:
                     response_data = rg.error_response_generator(400, 'Invalid or missing parameter submitted')
                     return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
