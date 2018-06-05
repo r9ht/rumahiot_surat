@@ -23,12 +23,12 @@ def email_activation(request):
         try:
             token = requtils.get_access_token(request)
         except KeyError:
-            response_data = rg.error_response_generator(403, 'Please define the authorization header')
-            return HttpResponse(json.dumps(response_data), content_type='application/json', status=403)
+            response_data = rg.error_response_generator(401, 'Please define the authorization header')
+            return HttpResponse(json.dumps(response_data), content_type='application/json', status=401)
         else:
             if token['token'] is None:
-                response_data = rg.error_response_generator(403, token['error'])
-                return HttpResponse(json.dumps(response_data), content_type='application/json', status=403)
+                response_data = rg.error_response_generator(401, token['error'])
+                return HttpResponse(json.dumps(response_data), content_type='application/json', status=401)
             else:
                 form = EmailActivationForm(request.POST)
                 if form.is_valid():
@@ -43,7 +43,7 @@ def email_activation(request):
                             subject='Please verify your Rumah IoT account',
                             text='Hi,\n\nThanks for registering in Rumah IoT ! Please '
                                     'confirm your email address by clicking the link supplied '
-                                    'below\n\n{}/{}\n\n'
+                                    'below\n\n{}{}\n\n'
                                     'If you did not sign up for a Rumah IoT account please omit this email\n\n'
                                     'Regards\nRumah IoT Team'.format(SIDIK_EMAIL_ACTIVATION_ENDPOINT,form.cleaned_data['activation_uuid'])
                         )
@@ -85,12 +85,12 @@ def welcome_email(request):
         try:
             token = requtils.get_access_token(request)
         except KeyError:
-            response_data = rg.error_response_generator(403, 'Please define the authorization header')
-            return HttpResponse(json.dumps(response_data), content_type='application/json', status=403)
+            response_data = rg.error_response_generator(401, 'Please define the authorization header')
+            return HttpResponse(json.dumps(response_data), content_type='application/json', status=401)
         else:
             if token['token'] is None:
-                response_data = rg.error_response_generator(403, token['error'])
-                return HttpResponse(json.dumps(response_data), content_type='application/json', status=403)
+                response_data = rg.error_response_generator(401, token['error'])
+                return HttpResponse(json.dumps(response_data), content_type='application/json', status=401)
             else:
                 form = EmailWelcomeForm(request.POST)
                 if form.is_valid():
@@ -143,12 +143,12 @@ def device_notification_email(request):
         try:
             token = requtils.get_access_token(request)
         except KeyError:
-            response_data = rg.error_response_generator(403, 'Please define the authorization header')
-            return HttpResponse(json.dumps(response_data), content_type='application/json', status=403)
+            response_data = rg.error_response_generator(401, 'Please define the authorization header')
+            return HttpResponse(json.dumps(response_data), content_type='application/json', status=401)
         else:
             if token['token'] is None:
-                response_data = rg.error_response_generator(403, token['error'])
-                return HttpResponse(json.dumps(response_data), content_type='application/json', status=403)
+                response_data = rg.error_response_generator(401, token['error'])
+                return HttpResponse(json.dumps(response_data), content_type='application/json', status=401)
             else:
                 form = DeviceNotificationEmail(request.POST)
                 if form.is_valid():
@@ -210,8 +210,8 @@ def device_notification_email(request):
                             response_data = rg.error_response_generator(500, 'Internal server error')
                             return HttpResponse(json.dumps(response_data), content_type='application/json', status=500)
                     else:
-                        response_data = rg.error_response_generator(403, token['error'])
-                        return HttpResponse(json.dumps(response_data), content_type="application/json", status=403)
+                        response_data = rg.error_response_generator(401, token['error'])
+                        return HttpResponse(json.dumps(response_data), content_type="application/json", status=401)
                 else:
                     response_data = rg.error_response_generator(400, 'Invalid or missing parameter submitted')
                     return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
