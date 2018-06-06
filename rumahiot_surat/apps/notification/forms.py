@@ -1,12 +1,18 @@
 from django import forms
 
+class ForgotPasswordForm(forms.Form):
+    email = forms.EmailField(required=True, max_length=254)
+    forgot_password_uuid = forms.CharField(required=True, max_length=32)
+    full_name = forms.CharField(required=True, max_length=70)
 
 class EmailActivationForm(forms.Form):
     email = forms.EmailField(required=True, max_length=254)
-    activation_uuid = forms.CharField(required=True, max_length=254)
+    activation_uuid = forms.CharField(required=True, max_length=32)
+    full_name = forms.CharField(required=True, max_length=70)
 
 class EmailWelcomeForm(forms.Form):
     email = forms.EmailField(required=True, max_length=254)
+    full_name = forms.CharField(required=True, max_length=70)
 
 # For submitting notification email
 class DeviceNotificationEmail(forms.Form):
