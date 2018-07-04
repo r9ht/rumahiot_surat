@@ -10,6 +10,8 @@ from rumahiot_surat.apps.sidik_module.authorization import SuratSidikModule
 from uuid import uuid4
 import pymongo
 
+from rumahiot_surat.apps.sidik_module.decorator import authentication_required, get_method_required
+
 # Create your views here.
 
 # For panel device notification in the top right corner
@@ -81,151 +83,94 @@ def device_panel_notification(request):
         return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
 
 # For changing viewed status on a specific device notification
-def clear_device_panel_notification(request, device_sensor_notification_log_uuid):
+@get_method_required
+@authentication_required
+def clear_device_panel_notification(request, user, device_sensor_notification_log_uuid):
+
     # Class import
     rg = ResponseGenerator()
-    requtils = RequestUtils()
     db = SuratMongoDB()
-    auth = SuratSidikModule()
 
-    if request.method == 'GET' :
-        try:
-            token = requtils.get_access_token(request)
-        except KeyError:
-            response_data = rg.error_response_generator(401, 'Please define the authorization header')
-            return HttpResponse(json.dumps(response_data), content_type='application/json', status=401)
-        else:
-            if token['token'] != None:
-                user = auth.get_user_data(token['token'])
-                if user['user_uuid'] != None:
-                    # get the notification log
-                    log = db.get_notification_log_by_uuid(device_sensor_notification_log_uuid=device_sensor_notification_log_uuid, viewed='0')
-                    if log != None:
-                        # check the owenership
-                        if user['user_uuid'] == log['user_uuid']:
-                            try :
-                                # Update the viewed status
-                                db.update_notification_log_viewed_status(object_id=log['_id'], new_viewed_status='1')
-                            except:
-                                # For unknown error
-                                response_data = rg.error_response_generator(500, 'Internal server error')
-                                return HttpResponse(json.dumps(response_data), content_type='application/json',
-                                                    status=500)
-                            else:
-                                response_data = rg.success_response_generator(200, 'Device notification log status successfully changed')
-                                return HttpResponse(json.dumps(response_data), content_type='application/json',
-                                                    status=200)
-                        else:
-                            response_data = rg.error_response_generator(400, 'Invalid device notification log uuid')
-                            return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
-                    else:
-                        response_data = rg.error_response_generator(400, 'Invalid device notification log uuid')
-                        return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
-
-                else:
-                    response_data = rg.error_response_generator(401, user['error'])
-                    return HttpResponse(json.dumps(response_data), content_type='application/json', status=401)
+    # get the notification log
+    log = db.get_notification_log_by_uuid(device_sensor_notification_log_uuid=device_sensor_notification_log_uuid, viewed='0')
+    if log != None:
+        # check the owenership
+        if user['user_uuid'] == log['user_uuid']:
+            try:
+                # Update the viewed status
+                db.update_notification_log_viewed_status(object_id=log['_id'], new_viewed_status='1')
+            except:
+                # For unknown error
+                response_data = rg.error_response_generator(500, 'Internal server error')
+                return HttpResponse(json.dumps(response_data), content_type='application/json',
+                                    status=500)
             else:
-                response_data = rg.error_response_generator(401, token['error'])
-                return HttpResponse(json.dumps(response_data), content_type='application/json', status=401)
-
+                response_data = rg.success_response_generator(200, 'Device notification log status successfully changed')
+                return HttpResponse(json.dumps(response_data), content_type='application/json',
+                                    status=200)
+        else:
+            response_data = rg.error_response_generator(400, 'Invalid device notification log uuid')
+            return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
     else:
-        response_data = rg.error_response_generator(400, 'Bad request method')
+        response_data = rg.error_response_generator(400, 'Invalid device notification log uuid')
         return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
 
 # For changing viewed status for all device notification
-def clear_all_device_panel_notification(request):
+@get_method_required
+@authentication_required
+def clear_all_device_panel_notification(request, user):
+
     # Class import
     rg = ResponseGenerator()
-    requtils = RequestUtils()
     db = SuratMongoDB()
-    auth = SuratSidikModule()
 
-    if request.method == 'GET' :
-        try:
-            token = requtils.get_access_token(request)
-        except KeyError:
-            response_data = rg.error_response_generator(401, 'Please define the authorization header')
-            return HttpResponse(json.dumps(response_data), content_type='application/json', status=401)
-        else:
-            if token['token'] != None:
-                user = auth.get_user_data(token['token'])
-                if user['user_uuid'] != None:
-                    # get the notification log
-                    logs = db.get_notification_log_by_user_uuid(user_uuid=user['user_uuid'], viewed='0', direction=pymongo.DESCENDING)
-                    if logs.count() != 0:
-                        # clear all the log
-                        for log in logs:
-                            db.update_notification_log_viewed_status(object_id=log['_id'], new_viewed_status='1')
-                        response_data = rg.success_response_generator(200, 'All device notification log status successfully cleared')
-                        return HttpResponse(json.dumps(response_data), content_type='application/json',
-                                                    status=200)
-                    else:
-                        response_data = rg.success_response_generator(200, 'All device notification log successfully cleared')
-                        return HttpResponse(json.dumps(response_data), content_type='application/json', status=200)
-
-                else:
-                    response_data = rg.error_response_generator(401, user['error'])
-                    return HttpResponse(json.dumps(response_data), content_type='application/json', status=401)
-            else:
-                response_data = rg.error_response_generator(401, token['error'])
-                return HttpResponse(json.dumps(response_data), content_type="application/json", status=401)
+    # get the notification log
+    logs = db.get_notification_log_by_user_uuid(user_uuid=user['user_uuid'], viewed='0', direction=pymongo.DESCENDING)
+    if logs.count() != 0:
+        # clear all the log
+        for log in logs:
+            db.update_notification_log_viewed_status(object_id=log['_id'], new_viewed_status='1')
+        response_data = rg.success_response_generator(200, 'All device notification log status successfully cleared')
+        return HttpResponse(json.dumps(response_data), content_type='application/json',
+                            status=200)
     else:
-        response_data = rg.error_response_generator(400, 'Bad request method')
-        return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
-
+        response_data = rg.success_response_generator(200, 'All device notification log successfully cleared')
+        return HttpResponse(json.dumps(response_data), content_type='application/json', status=200)
 
 # For getting all device panel notification
-def get_all_device_panel_notification(request):
+@get_method_required
+@authentication_required
+def get_all_device_panel_notification(request, user):
+
     # Class import
     rg = ResponseGenerator()
-    requtils = RequestUtils()
     db = SuratMongoDB()
-    auth = SuratSidikModule()
 
-    if request.method == 'GET' :
-        try:
-            token = requtils.get_access_token(request)
-        except KeyError:
-            response_data = rg.error_response_generator(400, 'Please define the authorization header')
-            return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
-        else:
-            if token['token'] != None:
-                user = auth.get_user_data(token['token'])
-                if user['user_uuid'] != None:
-                    # get the notification log
-                    # Defaulting
-                    logs = db.get_notification_log_by_user_uuid(user_uuid=user['user_uuid'], viewed='0', direction=pymongo.DESCENDING)
-                    # Data for notification response
-                    data = {
-                        'device_notification_logs_count' : int(logs.count()),
-                        'device_notification_logs': [],
-                        'time_grabbed': float(datetime.now().timestamp())
-                    }
+    # get the notification log
+    # Defaulting
+    logs = db.get_notification_log_by_user_uuid(user_uuid=user['user_uuid'], viewed='0', direction=pymongo.DESCENDING)
+    # Data for notification response
+    data = {
+        'device_notification_logs_count': int(logs.count()),
+        'device_notification_logs': [],
+        'time_grabbed': float(datetime.now().timestamp())
+    }
 
-                    for log in logs :
-                        # Device notification log data for device_notification_logs list
-                        device_notification_log = {}
-                        device_notification_log['device_sensor_notification_log_uuid'] = log['device_sensor_notification_log_uuid']
-                        device_notification_log['device_uuid'] = log['device_uuid']
-                        device_notification_log['device_name'] = log['device_name']
-                        device_notification_log['user_sensor_uuid'] = log['user_sensor_uuid']
-                        device_notification_log['user_sensor_name'] = log['user_sensor_name']
-                        device_notification_log['threshold_value'] = log['threshold_value']
-                        device_notification_log['latest_value'] = log['latest_value']
-                        device_notification_log['time_reached'] = log['time_reached']
-                        device_notification_log['threshold_direction'] = log['threshold_direction']
-                        device_notification_log['unit_symbol'] = log['unit_symbol']
-                        device_notification_log['notification_type'] = log['notification_type']
-                        data['device_notification_logs'].append(device_notification_log)
+    for log in logs:
+        # Device notification log data for device_notification_logs list
+        device_notification_log = {}
+        device_notification_log['device_sensor_notification_log_uuid'] = log['device_sensor_notification_log_uuid']
+        device_notification_log['device_uuid'] = log['device_uuid']
+        device_notification_log['device_name'] = log['device_name']
+        device_notification_log['user_sensor_uuid'] = log['user_sensor_uuid']
+        device_notification_log['user_sensor_name'] = log['user_sensor_name']
+        device_notification_log['threshold_value'] = log['threshold_value']
+        device_notification_log['latest_value'] = log['latest_value']
+        device_notification_log['time_reached'] = log['time_reached']
+        device_notification_log['threshold_direction'] = log['threshold_direction']
+        device_notification_log['unit_symbol'] = log['unit_symbol']
+        device_notification_log['notification_type'] = log['notification_type']
+        data['device_notification_logs'].append(device_notification_log)
 
-                    response_data = rg.data_response_generator(data)
-                    return HttpResponse(json.dumps(response_data), content_type="application/json", status=200)
-
-                else:
-                    response_data = rg.error_response_generator(400, user['error'])
-                    return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
-
-    else:
-        response_data = rg.error_response_generator(400, 'Bad request method')
-        return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
+    response_data = rg.data_response_generator(data)
+    return HttpResponse(json.dumps(response_data), content_type="application/json", status=200)
