@@ -2,9 +2,8 @@ import json
 
 from django.shortcuts import HttpResponse
 
-from rumahiot_gudang.apps.sidik_module.authorization import GudangSidikModule
-from rumahiot_gudang.apps.store.mongodb import GudangMongoDB
-from rumahiot_gudang.apps.store.utils import RequestUtils, ResponseGenerator, GudangUtils
+from rumahiot_surat.apps.sidik_module.authorization import SuratSidikModule
+from rumahiot_surat.apps.notification.utils import RequestUtils, ResponseGenerator
 
 # Decorator to make sure the request method is post
 def post_method_required(function):
@@ -48,7 +47,7 @@ def authentication_required(function):
     def token_check(request, *args, **kwargs):
 
         requtils = RequestUtils()
-        auth = GudangSidikModule()
+        auth = SuratSidikModule()
         rg = ResponseGenerator()
 
         # Check the token
