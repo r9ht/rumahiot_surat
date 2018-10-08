@@ -211,7 +211,7 @@ def device_notification_email(request):
                             threshold_direction = 'Below'
 
                         if form.cleaned_data['notification_type'] == '0' :
-                            email_body = 'Hi there , we are notifying that current value of sensor {} on device {} is {}{} at {}, {} ' \
+                            email_body = 'Hi there , we are notifying that current value of sensor {} on device {} is {}{} at {} (UTC), {} ' \
                                          'the set threshold value which is {}{}, There will be no more notification unless the latest ' \
                                          'value is going back to normal and we will let you know when it happens' \
                                          '\n\nRegards\nRumah IoT Team'.format(form.cleaned_data['user_sensor_name'],
@@ -227,7 +227,7 @@ def device_notification_email(request):
 
                         elif form.cleaned_data['notification_type'] == '1' :
                             email_body = 'Hi, this is a proceeding information from the last notification, we are notifying ' \
-                                         'you that the current value of sensor {} on device {} is going back to normal , {}{} at {}' \
+                                         'you that the current value of sensor {} on device {} is going back to normal , {}{} at {} (UTC)' \
                                          '\n\nRegards\nRumah IoT Team'.format(form.cleaned_data['user_sensor_name'],
                                                                               form.cleaned_data['device_name'],
                                                                               form.cleaned_data['latest_value'],
